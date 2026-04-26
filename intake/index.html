@@ -829,38 +829,35 @@ ROI Timeline: 3-6 months typical implementation period
 AI Readiness: High - business is well-positioned
             `;
  
-            // Send via Formspree with full details
-            const formEl = document.createElement('form');
-            formEl.method = 'POST';
-            formEl.action = 'https://formspree.io/f/mpqknvwq';
-            formEl.style.display = 'none';
- 
-            // Add subject
-            const subjectInput = document.createElement('input');
-            subjectInput.type = 'hidden';
-            subjectInput.name = '_subject';
-            subjectInput.value = `New AI Evaluation Lead: ${emailData.fullName} - ${emailData.company}`;
-            formEl.appendChild(subjectInput);
- 
-            // Add full message
-            const messageInput = document.createElement('input');
-            messageInput.type = 'hidden';
-            messageInput.name = 'message';
-            messageInput.value = emailBody;
-            formEl.appendChild(messageInput);
- 
-            // Add individual fields for reference
-            Object.keys(emailData).forEach(key => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = emailData[key];
-                formEl.appendChild(input);
-            });
- 
-            document.body.appendChild(formEl);
-            formEl.submit();
-            document.body.removeChild(formEl);
+            // Send via Formspree using fetch (async, no page redirect)
+            fetch('https://formspree.io/f/mpqknvwq', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: `New AI Evaluation Lead: ${emailData.fullName} - ${emailData.company}`,
+                    message: emailBody,
+                    name: emailData.fullName,
+                    email: emailData.email,
+                    phone: emailData.phone,
+                    company: emailData.company,
+                    industry: emailData.industry,
+                    challenges: emailData.challenges,
+                    currentSituation: emailData.currentSituation,
+                    specificChallenges: emailData.specificChallenges,
+                    goals: emailData.goals,
+                    timeline: emailData.timeline,
+                    budget: emailData.budget,
+                    successLook: emailData.successLook,
+                    additionalInfo: emailData.additionalInfo,
+                    submittedAt: emailData.submittedAt
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Form submitted:', data))
+            .catch(error => console.error('Form error:', error));
         }
  
         // Form submission
@@ -895,4 +892,3 @@ AI Readiness: High - business is well-positioned
     </script>
 </body>
 </html>
- 
