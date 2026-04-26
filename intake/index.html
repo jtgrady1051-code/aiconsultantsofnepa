@@ -779,24 +779,20 @@
         }
  
         function sendEmailNotification() {
-            const formElement = document.getElementById('intakeForm');
-            const formDataObj = new FormData(formElement);
-            
-            // Collect all form data
             const emailData = {
                 fullName: document.getElementById('fullName').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 company: document.getElementById('company').value,
-                industry: document.getElementById('industry').value,
-                challenges: Array.from(document.querySelectorAll('input[name="challenges"]:checked')).map(el => el.value).join(', '),
+                industry: document.querySelector('input[name="industry"]:checked') ? document.querySelector('input[name="industry"]:checked').value : 'Not selected',
+                challenges: Array.from(document.querySelectorAll('input[name="challenges"]:checked')).map(el => el.value).join(', ') || 'None selected',
                 currentSituation: document.getElementById('currentSituation').value,
                 specificChallenges: document.getElementById('specificChallenges').value,
                 goals: document.getElementById('goals').value,
                 timeline: document.getElementById('timeline').value,
                 budget: document.getElementById('budget').value,
                 successLook: document.getElementById('successLook').value,
-                additionalInfo: document.getElementById('additionalInfo').value,
+                additionalInfo: document.getElementById('additionalInfo').value || 'None',
                 submittedAt: new Date().toLocaleString()
             };
  
@@ -829,7 +825,7 @@ ROI Timeline: 3-6 months typical implementation period
 AI Readiness: High - business is well-positioned
             `;
  
-            // Send via Formspree using fetch (async, no page redirect)
+            // Send via Formspree using fetch
             fetch('https://formspree.io/f/mpqknvwq', {
                 method: 'POST',
                 headers: {
@@ -837,27 +833,30 @@ AI Readiness: High - business is well-positioned
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    _subject: `New AI Evaluation Lead: ${emailData.fullName} - ${emailData.company}`,
-                    message: emailBody,
-                    name: emailData.fullName,
-                    email: emailData.email,
-                    phone: emailData.phone,
-                    company: emailData.company,
-                    industry: emailData.industry,
-                    challenges: emailData.challenges,
-                    currentSituation: emailData.currentSituation,
-                    specificChallenges: emailData.specificChallenges,
-                    goals: emailData.goals,
-                    timeline: emailData.timeline,
-                    budget: emailData.budget,
-                    successLook: emailData.successLook,
-                    additionalInfo: emailData.additionalInfo,
-                    submittedAt: emailData.submittedAt
+                    _subject: 'New AI Evaluation Lead: ' + emailData.fullName + ' - ' + emailData.company,
+                    '1_Name': emailData.fullName,
+                    '2_Email': emailData.email,
+                    '3_Phone': emailData.phone,
+                    '4_Company': emailData.company,
+                    '5_Industry': emailData.industry,
+                    '6_Challenges': emailData.challenges,
+                    '7_Current_Situation': emailData.currentSituation,
+                    '8_Specific_Opportunities': emailData.specificChallenges,
+                    '9_Business_Goals': emailData.goals,
+                    '10_Timeline': emailData.timeline,
+                    '11_Budget': emailData.budget,
+                    '12_Vision_of_Success': emailData.successLook,
+                    '13_Additional_Info': emailData.additionalInfo,
+                    '14_Analysis_Time_Savings': '40% per year through automation',
+                    '15_Analysis_Cost_Reduction': '$30,000 per year through optimization',
+                    '16_Analysis_ROI_Timeline': '3-6 months typical implementation',
+                    '17_Analysis_AI_Readiness': 'High - business is well-positioned',
+                    '18_Submitted_At': emailData.submittedAt
                 })
             })
-            .then(response => response.json())
-            .then(data => console.log('Form submitted:', data))
-            .catch(error => console.error('Form error:', error));
+            .then(function(response) { return response.json(); })
+            .then(function(data) { console.log('Formspree success:', data); })
+            .catch(function(error) { console.error('Formspree error:', error); });
         }
  
         // Form submission
