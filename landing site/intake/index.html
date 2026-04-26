@@ -1,797 +1,853 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Consulting Evaluation - Free Phone Consultation</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Consulting Evaluation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
 
-    .header {
-      text-align: center;
-      color: white;
-      margin-bottom: 30px;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
 
-    .header h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
 
-    .header p {
-      font-size: 16px;
-      opacity: 0.9;
-      margin-bottom: 20px;
-    }
+        .header p {
+            font-size: 1.1rem;
+            color: #a0aec0;
+        }
 
-    .progress-bar {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 30px;
-    }
+        .progress-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
 
-    .progress-step {
-      height: 8px;
-      width: 48px;
-      border-radius: 4px;
-      background: #334155;
-      transition: all 0.3s;
-    }
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4a5568;
+            transition: all 0.3s ease;
+        }
 
-    .progress-step.active {
-      background: #06b6d4;
-    }
+        .progress-dot.active {
+            background: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
 
-    .form-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 40px;
-      color: white;
-    }
+        .progress-dot.completed {
+            background: #00d4ff;
+        }
 
-    .form-group {
-      margin-bottom: 24px;
-    }
+        .form-container {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
 
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #cbd5e1;
-      font-size: 14px;
-    }
+        .form-section {
+            display: none;
+        }
 
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #475569;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-      background: #0f172a;
-      color: white;
-      transition: border-color 0.2s;
-    }
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
 
-    input::placeholder, textarea::placeholder {
-      color: #64748b;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #06b6d4;
-      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
-    }
+        .section-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
 
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
+        .form-group {
+            margin-bottom: 25px;
+        }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+        label {
+            display: block;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
 
-    .checkbox-group, .radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+        .required::after {
+            content: " *";
+            color: #ff6b6b;
+        }
 
-    .checkbox-item, .radio-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
 
-    input[type="checkbox"], input[type="radio"] {
-      width: auto;
-      margin: 0;
-      cursor: pointer;
-    }
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="tel"]::placeholder,
+        textarea::placeholder {
+            color: #64748b;
+        }
 
-    .checkbox-item label, .radio-item label {
-      margin: 0;
-      cursor: pointer;
-      font-weight: 400;
-    }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
 
-    .button-group {
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-      margin-top: 30px;
-    }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
 
-    button {
-      padding: 12px 24px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+        .radio-group,
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
 
-    .btn-next {
-      background: #06b6d4;
-      color: white;
-      flex: 1;
-    }
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .btn-next:hover:not(:disabled) {
-      background: #0891b2;
-      transform: translateY(-2px);
-    }
+        input[type="radio"],
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #00d4ff;
+        }
 
-    .btn-next:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        .radio-item label,
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
 
-    .btn-back {
-      background: #475569;
-      color: white;
-    }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
 
-    .btn-back:hover {
-      background: #64748b;
-    }
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
 
-    .btn-submit {
-      background: #10b981;
-      color: white;
-    }
+            .header h1 {
+                font-size: 1.8rem;
+            }
 
-    .btn-submit:hover:not(:disabled) {
-      background: #059669;
-      transform: translateY(-2px);
-    }
+            .form-container {
+                padding: 25px;
+            }
+        }
 
-    .hidden {
-      display: none;
-    }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: space-between;
+        }
 
-    .dashboard {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    .dashboard-card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 20px;
-    }
+        .btn-back {
+            background: rgba(100, 116, 139, 0.5);
+            color: white;
+            flex: 0 0 auto;
+        }
 
-    .dashboard-card h3 {
-      color: #cbd5e1;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-    }
+        .btn-back:hover {
+            background: rgba(100, 116, 139, 0.7);
+        }
 
-    .dashboard-card .value {
-      font-size: 32px;
-      font-weight: bold;
-      color: #06b6d4;
-      margin-bottom: 4px;
-    }
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: white;
+            flex: 1;
+            margin-left: auto;
+        }
 
-    .dashboard-card .label {
-      color: #94a3b8;
-      font-size: 12px;
-    }
+        .btn-next:hover,
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
 
-    .pain-score {
-      grid-column: 1 / -1;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 30px;
-      text-align: center;
-    }
+        .btn-next:active,
+        .btn-submit:active {
+            transform: translateY(0);
+        }
 
-    .pain-score .score {
-      font-size: 64px;
-      font-weight: bold;
-      color: #06b6d4;
-      margin-bottom: 10px;
-    }
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
 
-    .pain-score .level {
-      font-size: 18px;
-      color: #cbd5e1;
-    }
+        .error-message.show {
+            display: block;
+        }
 
-    .chart-container {
-      grid-column: 1 / -1;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 20px;
-      position: relative;
-      height: 300px;
-    }
+        input.error,
+        textarea.error,
+        select.error {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
 
-    .insights {
-      grid-column: 1 / -1;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 20px;
-    }
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #86efac;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
 
-    .insights h3 {
-      color: #cbd5e1;
-      margin-bottom: 16px;
-    }
+        .success-message.show {
+            display: block;
+        }
 
-    .insights ul {
-      list-style: none;
-    }
+        .analysis-section {
+            display: none;
+        }
 
-    .insights li {
-      color: #cbd5e1;
-      margin-bottom: 12px;
-      padding-left: 24px;
-      position: relative;
-      line-height: 1.6;
-    }
+        .analysis-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
 
-    .insights li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: #06b6d4;
-      font-weight: bold;
-    }
+        .analysis-title {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-    .success-screen {
-      text-align: center;
-      padding: 40px;
-    }
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
 
-    .success-icon {
-      font-size: 64px;
-      margin-bottom: 20px;
-    }
+        .analysis-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
 
-    .success-screen h2 {
-      color: white;
-      font-size: 28px;
-      margin-bottom: 16px;
-    }
+        .analysis-card h3 {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .success-screen p {
-      color: #cbd5e1;
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
+        .analysis-card .value {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
 
-    .calendly-btn {
-      display: inline-block;
-      background: #10b981;
-      color: white;
-      padding: 14px 32px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      margin-top: 20px;
-      transition: all 0.2s;
-    }
+        .analysis-card .unit {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
 
-    .calendly-btn:hover {
-      background: #059669;
-      transform: translateY(-2px);
-    }
+        .next-steps {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #cbd5e1;
-    }
+        .next-steps h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
 
-    .spinner {
-      border: 3px solid #334155;
-      border-top: 3px solid #06b6d4;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
+        .next-steps ol {
+            color: #e2e8f0;
+            margin-left: 20px;
+            line-height: 1.8;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        .next-steps li {
+            margin-bottom: 10px;
+        }
 
-    .error {
-      background: #7f1d1d;
-      color: #fca5a5;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
+        .calendly-section {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
 
-    @media (max-width: 768px) {
-      .form-row {
-        grid-template-columns: 1fr;
-      }
+        .calendly-section h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
 
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
+        .calendly-section p {
+            color: #e2e8f0;
+            margin-bottom: 20px;
+        }
 
-      .form-card {
-        padding: 20px;
-      }
+        .btn-calendly {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            display: inline-block;
+        }
 
-      button {
-        padding: 10px 16px;
-        font-size: 13px;
-      }
-    }
-  </style>
+        .btn-calendly:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #00d4ff;
+            margin: 20px 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 212, 255, 0.3);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>AI Consulting Evaluation</h1>
-      <p>Discover how AI can transform your business</p>
-      <div class="progress-bar">
-        <div class="progress-step active" id="step1"></div>
-        <div class="progress-step" id="step2"></div>
-        <div class="progress-step" id="step3"></div>
-        <div class="progress-step" id="step4"></div>
-        <div class="progress-step" id="step5"></div>
-      </div>
+    <div class="container">
+        <div class="header">
+            <h1>AI Consulting Evaluation</h1>
+            <p>Discover how AI can transform your business</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-dot active" id="dot-1"></div>
+            <div class="progress-dot" id="dot-2"></div>
+            <div class="progress-dot" id="dot-3"></div>
+            <div class="progress-dot" id="dot-4"></div>
+            <div class="progress-dot" id="dot-5"></div>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage"></div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Submitting your information...</p>
+            </div>
+
+            <form id="intakeForm">
+                <!-- Step 1: Basics -->
+                <div class="form-section active" id="step-1">
+                    <h2 class="section-title">Let's start with the basics</h2>
+                    
+                    <div class="form-group">
+                        <label for="fullName" class="required">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="required">Email</label>
+                        <input type="email" id="email" name="email" placeholder="john@company.com" required>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company" class="required">Company Name</label>
+                        <input type="text" id="company" name="company" placeholder="Your Company" required>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Industry</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="construction" name="industry" value="Construction" required>
+                                <label for="construction">🏗️ Construction</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="healthcare" name="industry" value="Healthcare">
+                                <label for="healthcare">🏥 Healthcare</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="manufacturing" name="industry" value="Manufacturing">
+                                <label for="manufacturing">🏭 Manufacturing</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="retail" name="industry" value="Retail">
+                                <label for="retail">🛍️ Retail</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="services" name="industry" value="Professional Services">
+                                <label for="services">💼 Professional Services</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="other" name="industry" value="Other">
+                                <label for="other">📋 Other</label>
+                            </div>
+                        </div>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Pain Points -->
+                <div class="form-section" id="step-2">
+                    <h2 class="section-title">Current challenges</h2>
+                    
+                    <div class="form-group">
+                        <label class="required">What are your biggest operational challenges?</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="manual" name="challenges" value="Manual processes">
+                                <label for="manual">Manual processes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data" name="challenges" value="Data management">
+                                <label for="data">Data management</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="efficiency" name="challenges" value="Efficiency">
+                                <label for="efficiency">Efficiency</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="costs" name="challenges" value="High costs">
+                                <label for="costs">High costs</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="scaling" name="challenges" value="Scaling">
+                                <label for="scaling">Scaling</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="integration" name="challenges" value="System integration">
+                                <label for="integration">System integration</label>
+                            </div>
+                        </div>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currentSituation" class="required">Describe your current situation</label>
+                        <textarea id="currentSituation" name="currentSituation" placeholder="Tell us about your business and current operations..." required></textarea>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-back" onclick="previousStep()">← Back</button>
+                        <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Specific Challenges -->
+                <div class="form-section" id="step-3">
+                    <h2 class="section-title">Specific opportunities</h2>
+                    
+                    <div class="form-group">
+                        <label for="specificChallenges" class="required">What specific areas would you like to improve with AI?</label>
+                        <textarea id="specificChallenges" name="specificChallenges" placeholder="Be as specific as possible..." required></textarea>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goals" class="required">What are your main business goals?</label>
+                        <textarea id="goals" name="goals" placeholder="e.g., Increase revenue, reduce costs, improve efficiency..." required></textarea>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-back" onclick="previousStep()">← Back</button>
+                        <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Timeline & Budget -->
+                <div class="form-section" id="step-4">
+                    <h2 class="section-title">Timeline and goals</h2>
+                    
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="timeline" class="required">Implementation timeline</label>
+                            <select id="timeline" name="timeline" required>
+                                <option value="">Select timeline...</option>
+                                <option value="Immediate (0-3 months)">Immediate (0-3 months)</option>
+                                <option value="Short-term (3-6 months)">Short-term (3-6 months)</option>
+                                <option value="Medium-term (6-12 months)">Medium-term (6-12 months)</option>
+                                <option value="Long-term (12+ months)">Long-term (12+ months)</option>
+                            </select>
+                            <div class="error-message"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="budget" class="required">Budget range</label>
+                            <select id="budget" name="budget" required>
+                                <option value="">Select budget...</option>
+                                <option value="Under $10K">Under $10K</option>
+                                <option value="$10K - $50K">$10K - $50K</option>
+                                <option value="$50K - $100K">$50K - $100K</option>
+                                <option value="$100K+">$100K+</option>
+                            </select>
+                            <div class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="successLook" class="required">What does success look like for you in the next 12 months?</label>
+                        <textarea id="successLook" name="successLook" placeholder="Describe your vision of success..." required></textarea>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-back" onclick="previousStep()">← Back</button>
+                        <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Summary -->
+                <div class="form-section" id="step-5">
+                    <h2 class="section-title">Review & submit</h2>
+                    
+                    <div class="form-group">
+                        <label for="additionalInfo">Any additional information?</label>
+                        <textarea id="additionalInfo" name="additionalInfo" placeholder="Anything else you'd like us to know?"></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-back" onclick="previousStep()">← Back</button>
+                        <button type="submit" class="btn-submit">Submit & See Analysis</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Analysis Results -->
+            <div class="analysis-section" id="analysisResults">
+                <h2 class="analysis-title">Your AI Consulting Analysis</h2>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3>Potential Time Savings</h3>
+                        <div class="value">40%</div>
+                        <div class="unit">per year through automation</div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>Cost Reduction</h3>
+                        <div class="value">$30,000</div>
+                        <div class="unit">per year through optimization</div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>ROI Timeline</h3>
+                        <div class="value">3-6 months</div>
+                        <div class="unit">typical implementation period</div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>AI Readiness</h3>
+                        <div class="value">High</div>
+                        <div class="unit">your business is well-positioned</div>
+                    </div>
+                </div>
+
+                <div class="next-steps">
+                    <h3>What Happens Next</h3>
+                    <ol>
+                        <li>Our team will review your responses and this analysis</li>
+                        <li>We'll contact you within 24 hours to schedule your free phone consultation</li>
+                        <li>During our consultation, we'll discuss your challenges and explore AI solutions</li>
+                        <li>If it's a good fit, we'll discuss options for a comprehensive in-person evaluation</li>
+                    </ol>
+                </div>
+
+                <div class="calendly-section">
+                    <h3>📅 Schedule Your Free Consultation</h3>
+                    <p>Pick a time that works best for you</p>
+                    <a href="https://calendly.com/jtgrady1051" target="_blank" class="btn-calendly">Schedule Now on Calendly</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="form-card">
-      <div id="errorMessage" class="error hidden"></div>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        const formData = {};
 
-      <!-- STEP 1: Contact Info -->
-      <div id="step1Content" class="step-content">
-        <h2 style="color: white; margin-bottom: 24px;">Let's start with the basics</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Full Name *</label>
-            <input type="text" id="name" placeholder="John Doe" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" id="email" placeholder="john@company.com" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="company">Company Name *</label>
-            <input type="text" id="company" placeholder="Your Company" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone Number *</label>
-            <input type="tel" id="phone" placeholder="(555) 123-4567" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Industry *</label>
-          <div class="radio-group">
-            <div class="radio-item">
-              <input type="radio" id="ind_construction" name="industry" value="construction" checked>
-              <label for="ind_construction">🏗️ Construction</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_healthcare" name="industry" value="healthcare">
-              <label for="ind_healthcare">🏥 Healthcare</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_manufacturing" name="industry" value="manufacturing">
-              <label for="ind_manufacturing">🏭 Manufacturing</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_retail" name="industry" value="retail">
-              <label for="ind_retail">🛒 Retail</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_professional" name="industry" value="professional">
-              <label for="ind_professional">💼 Professional Services</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_emergency" name="industry" value="emergency">
-              <label for="ind_emergency">🚨 Emergency Services</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_logistics" name="industry" value="logistics">
-              <label for="ind_logistics">🚚 Logistics</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" id="ind_other" name="industry" value="other">
-              <label for="ind_other">📝 Other</label>
-            </div>
-          </div>
-        </div>
-        <div class="button-group">
-          <button class="btn-next" onclick="nextStep()">Next →</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: Pain Points -->
-      <div id="step2Content" class="step-content hidden">
-        <h2 style="color: white; margin-bottom: 24px;">What challenges are you facing?</h2>
-        <div class="form-group">
-          <label>Select all that apply *</label>
-          <div class="checkbox-group" id="painPointsContainer"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="timeWasted">Hours wasted per week *</label>
-            <input type="number" id="timeWasted" placeholder="e.g., 20" required>
-          </div>
-          <div class="form-group">
-            <label for="moneyLoss">Estimated monthly money loss *</label>
-            <input type="text" id="moneyLoss" placeholder="e.g., $5,000" required>
-          </div>
-        </div>
-        <div class="button-group">
-          <button class="btn-back" onclick="prevStep()">← Back</button>
-          <button class="btn-next" onclick="nextStep()">Next →</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: Challenges & Opportunities -->
-      <div id="step3Content" class="step-content hidden">
-        <h2 style="color: white; margin-bottom: 24px;">Tell us more about your challenges</h2>
-        <div class="form-group">
-          <label for="operationalChallenges">What are your biggest operational challenges? *</label>
-          <textarea id="operationalChallenges" placeholder="Describe your challenges..." required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="automationOpportunities">Where do you see the most opportunity for automation? *</label>
-          <textarea id="automationOpportunities" placeholder="Describe opportunities..." required></textarea>
-        </div>
-        <div class="button-group">
-          <button class="btn-back" onclick="prevStep()">← Back</button>
-          <button class="btn-next" onclick="nextStep()">Next →</button>
-        </div>
-      </div>
-
-      <!-- STEP 4: Timeline & Budget -->
-      <div id="step4Content" class="step-content hidden">
-        <h2 style="color: white; margin-bottom: 24px;">Timeline and goals</h2>
-        <div class="form-group">
-          <label for="successMetrics">What does success look like for you in the next 12 months? *</label>
-          <textarea id="successMetrics" placeholder="Describe your goals..." required></textarea>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="timeline">Implementation timeline *</label>
-            <select id="timeline" required>
-              <option value="">Select timeline</option>
-              <option value="Immediate (0-3 months)">Immediate (0-3 months)</option>
-              <option value="Short-term (3-6 months)">Short-term (3-6 months)</option>
-              <option value="Medium-term (6-12 months)">Medium-term (6-12 months)</option>
-              <option value="Long-term (12+ months)">Long-term (12+ months)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="budget">Budget range *</label>
-            <select id="budget" required>
-              <option value="">Select budget</option>
-              <option value="Under $10K">Under $10K</option>
-              <option value="$10K - $50K">$10K - $50K</option>
-              <option value="$50K - $100K">$50K - $100K</option>
-              <option value="$100K+">$100K+</option>
-            </select>
-          </div>
-        </div>
-        <div class="button-group">
-          <button class="btn-back" onclick="prevStep()">← Back</button>
-          <button class="btn-submit" onclick="submitForm()">Submit & See Analysis</button>
-        </div>
-      </div>
-
-      <!-- STEP 5: Analysis Dashboard -->
-      <div id="step5Content" class="step-content hidden">
-        <h2 style="color: white; margin-bottom: 24px;">Your AI Opportunity Analysis</h2>
-        <div id="analysisContent"></div>
-        <div style="margin-top: 30px; text-align: center;">
-          <a href="https://calendly.com/jtgrady1051" target="_blank" class="calendly-btn">Schedule Your Free Consultation</a>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div id="loadingState" class="loading hidden">
-        <div class="spinner"></div>
-        <p>Submitting your information...</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const PAIN_POINTS = {
-      construction: [
-        "Project delays and timeline overruns",
-        "Bid management and RFP tracking",
-        "Subcontractor communication",
-        "Cost overruns and budget tracking",
-        "Safety compliance and documentation",
-        "Scheduling and resource allocation"
-      ],
-      healthcare: [
-        "Patient scheduling and no-shows",
-        "Administrative paperwork burden",
-        "Staff scheduling conflicts",
-        "Data management and compliance",
-        "Insurance claim processing",
-        "Patient communication"
-      ],
-      manufacturing: [
-        "Production scheduling inefficiency",
-        "Inventory management",
-        "Quality control and tracking",
-        "Equipment maintenance scheduling",
-        "Supply chain coordination",
-        "Order fulfillment delays"
-      ],
-      emergency: [
-        "Dispatch response time",
-        "Resource allocation",
-        "Incident documentation",
-        "Staff scheduling",
-        "Communication between units",
-        "Data analysis and reporting"
-      ],
-      default: [
-        "Time-consuming manual processes",
-        "Data entry and management",
-        "Communication inefficiencies",
-        "Scheduling and coordination",
-        "Reporting and analytics",
-        "Customer/client management"
-      ]
-    };
-
-    let currentStep = 1;
-    let formData = {};
-
-    function updateProgress() {
-      for (let i = 1; i <= 5; i++) {
-        const step = document.getElementById(`step${i}`);
-        step.classList.toggle('active', i <= currentStep);
-      }
-    }
-
-    function showStep(step) {
-      document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`step${step}Content`).classList.remove('hidden');
-      updateProgress();
-
-      if (step === 2) {
-        loadPainPoints();
-      }
-    }
-
-    function loadPainPoints() {
-      const industry = document.querySelector('input[name="industry"]:checked').value;
-      const points = PAIN_POINTS[industry] || PAIN_POINTS.default;
-      const container = document.getElementById('painPointsContainer');
-      container.innerHTML = '';
-
-      points.forEach(point => {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        div.innerHTML = `
-          <input type="checkbox" id="pain_${point}" value="${point}">
-          <label for="pain_${point}">${point}</label>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function nextStep() {
-      if (validateStep(currentStep)) {
-        currentStep++;
-        showStep(currentStep);
-      }
-    }
-
-    function prevStep() {
-      currentStep--;
-      showStep(currentStep);
-    }
-
-    function validateStep(step) {
-      if (step === 1) {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const company = document.getElementById('company').value;
-        const phone = document.getElementById('phone').value;
-        if (!name || !email || !company || !phone) {
-          showError('Please fill in all required fields');
-          return false;
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                currentStep++;
+                updateForm();
+            }
         }
-      } else if (step === 2) {
-        const painPoints = document.querySelectorAll('input[id^="pain_"]:checked');
-        const timeWasted = document.getElementById('timeWasted').value;
-        const moneyLoss = document.getElementById('moneyLoss').value;
-        if (painPoints.length === 0 || !timeWasted || !moneyLoss) {
-          showError('Please fill in all required fields');
-          return false;
+
+        function previousStep() {
+            currentStep--;
+            updateForm();
         }
-      } else if (step === 3) {
-        const challenges = document.getElementById('operationalChallenges').value;
-        const opportunities = document.getElementById('automationOpportunities').value;
-        if (!challenges || !opportunities) {
-          showError('Please fill in all required fields');
-          return false;
+
+        function updateForm() {
+            // Hide all sections
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`step-${i}`).classList.remove('active');
+                document.getElementById(`dot-${i}`).classList.remove('active');
+                if (i < currentStep) {
+                    document.getElementById(`dot-${i}`).classList.add('completed');
+                } else {
+                    document.getElementById(`dot-${i}`).classList.remove('completed');
+                }
+            }
+
+            // Show current section
+            if (currentStep <= totalSteps) {
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.getElementById(`dot-${currentStep}`).classList.add('active');
+                document.getElementById('analysisResults').classList.remove('show');
+            } else {
+                showAnalysis();
+            }
+
+            // Scroll to top
+            document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      } else if (step === 4) {
-        const metrics = document.getElementById('successMetrics').value;
-        const timeline = document.getElementById('timeline').value;
-        const budget = document.getElementById('budget').value;
-        if (!metrics || !timeline || !budget) {
-          showError('Please fill in all required fields');
-          return false;
+
+        function validateStep(step) {
+            const fields = getStepFields(step);
+            let isValid = true;
+
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field) return;
+
+                const errorEl = field.parentElement.querySelector('.error-message');
+                let fieldValid = true;
+
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    const groupName = field.name;
+                    const isChecked = document.querySelector(`input[name="${groupName}"]:checked`);
+                    fieldValid = !!isChecked;
+                } else {
+                    fieldValid = field.value.trim() !== '';
+                }
+
+                if (!fieldValid) {
+                    field.classList.add('error');
+                    if (errorEl) {
+                        errorEl.textContent = 'This field is required';
+                        errorEl.classList.add('show');
+                    }
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                    if (errorEl) {
+                        errorEl.classList.remove('show');
+                    }
+                    formData[fieldId] = field.value;
+                }
+            });
+
+            return isValid;
         }
-      }
-      return true;
-    }
 
-    function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = message;
-      errorDiv.classList.remove('hidden');
-      setTimeout(() => errorDiv.classList.add('hidden'), 5000);
-    }
+        function getStepFields(step) {
+            const stepFields = {
+                1: ['fullName', 'email', 'phone', 'company', 'industry'],
+                2: ['challenges', 'currentSituation'],
+                3: ['specificChallenges', 'goals'],
+                4: ['timeline', 'budget', 'successLook'],
+                5: ['additionalInfo']
+            };
+            return stepFields[step] || [];
+        }
 
-    async function submitForm() {
-      if (!validateStep(4)) return;
+        function showAnalysis() {
+            document.getElementById('analysisResults').classList.add('show');
+            document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Send email
+            sendEmailNotification();
+        }
 
-      const painPoints = Array.from(document.querySelectorAll('input[id^="pain_"]:checked')).map(el => el.value);
+        function sendEmailNotification() {
+            const formElement = document.getElementById('intakeForm');
+            const formDataObj = new FormData(formElement);
+            
+            // Collect all form data
+            const emailData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value,
+                industry: document.getElementById('industry').value,
+                challenges: Array.from(document.querySelectorAll('input[name="challenges"]:checked')).map(el => el.value).join(', '),
+                currentSituation: document.getElementById('currentSituation').value,
+                specificChallenges: document.getElementById('specificChallenges').value,
+                goals: document.getElementById('goals').value,
+                timeline: document.getElementById('timeline').value,
+                budget: document.getElementById('budget').value,
+                successLook: document.getElementById('successLook').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                submittedAt: new Date().toLocaleString()
+            };
 
-      const data = {
-        clientName: document.getElementById('name').value,
-        clientEmail: document.getElementById('email').value,
-        clientPhone: document.getElementById('phone').value,
-        companyName: document.getElementById('company').value,
-        industry: document.querySelector('input[name="industry"]:checked').value,
-        timeWastingIssues: painPoints.join(', '),
-        moneyLeakAreas: document.getElementById('moneyLoss').value,
-        currentChallenges: document.getElementById('operationalChallenges').value,
-        businessGoals: document.getElementById('successMetrics').value,
-        bookingType: 'contact_first'
-      };
+            // Send via FormSubmit.co (free service that sends emails)
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://formspree.io/f/xyzgvqpd'; // You'll need to set up Formspree
+            form.style.display = 'none';
 
-      document.getElementById('step4Content').classList.add('hidden');
-      document.getElementById('loadingState').classList.remove('hidden');
+            Object.keys(emailData).forEach(key => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = emailData[key];
+                form.appendChild(input);
+            });
 
-      try {
-        const response = await fetch('/api/trpc/intake.submitForm', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ json: data }),
-          credentials: 'include'
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+
+        // Form submission
+        document.getElementById('intakeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateStep(currentStep)) {
+                document.getElementById('loading').classList.add('show');
+                
+                // Simulate processing
+                setTimeout(() => {
+                    document.getElementById('loading').classList.remove('show');
+                    currentStep = totalSteps + 1;
+                    updateForm();
+                }, 1000);
+            }
         });
 
-        if (!response.ok) throw new Error('Submission failed');
+        // Clear error on input
+        document.querySelectorAll('input, textarea, select').forEach(field => {
+            field.addEventListener('input', function() {
+                this.classList.remove('error');
+                const errorEl = this.parentElement.querySelector('.error-message');
+                if (errorEl) {
+                    errorEl.classList.remove('show');
+                }
+            });
+        });
 
-        formData = { ...data, painPoints, timeWasted: document.getElementById('timeWasted').value, moneyLoss: document.getElementById('moneyLoss').value };
-        showAnalysisDashboard();
-        document.getElementById('loadingState').classList.add('hidden');
-        showStep(5);
-      } catch (error) {
-        document.getElementById('loadingState').classList.add('hidden');
-        document.getElementById('step4Content').classList.remove('hidden');
-        showError('Failed to submit. Please try again.');
-      }
-    }
-
-    function showAnalysisDashboard() {
-      const painScore = calculatePainScore();
-      const timeWasted = parseInt(formData.timeWasted) || 0;
-      const moneyLoss = parseInt(formData.moneyLoss.replace(/\D/g, '')) || 0;
-      const annualTimeSavings = timeWasted * 52;
-      const estimatedCostSavings = moneyLoss * 0.6;
-
-      const html = `
-        <div class="dashboard">
-          <div class="pain-score">
-            <div class="score">${Math.round(painScore)}</div>
-            <div class="level">Business Pain Score / 100</div>
-          </div>
-          
-          <div class="dashboard-card">
-            <h3>Annual Time Savings</h3>
-            <div class="value">${annualTimeSavings.toLocaleString()}</div>
-            <div class="label">hours/year</div>
-          </div>
-          
-          <div class="dashboard-card">
-            <h3>Potential Cost Savings</h3>
-            <div class="value">$${estimatedCostSavings.toLocaleString(0)}</div>
-            <div class="label">annually</div>
-          </div>
-          
-          <div class="dashboard-card">
-            <h3>ROI Timeline</h3>
-            <div class="value">3-6</div>
-            <div class="label">months</div>
-          </div>
-          
-          <div class="insights">
-            <h3>Key Insights</h3>
-            <ul>
-              <li>Your business is experiencing significant operational challenges that AI can help solve</li>
-              <li>Based on your responses, AI automation could save approximately ${annualTimeSavings.toLocaleString()} hours annually</li>
-              <li>You have substantial opportunities for AI-driven improvements that could yield significant returns</li>
-              <li>Your business is well-positioned for AI integration with a typical 3-6 month ROI timeline</li>
-            </ul>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('analysisContent').innerHTML = html;
-    }
-
-    function calculatePainScore() {
-      const painPoints = formData.painPoints?.length || 0;
-      const timeWasted = parseInt(formData.timeWasted) || 0;
-      const moneyLoss = parseInt(formData.moneyLoss.replace(/\D/g, '')) || 0;
-
-      let score = 0;
-      score += painPoints * 15;
-      score += Math.min(timeWasted * 2, 30);
-      score += Math.min((moneyLoss / 10000) * 20, 20);
-      return Math.min(score, 100);
-    }
-
-    // Initialize
-    showStep(1);
-  </script>
+        // Initialize
+        updateForm();
+    </script>
 </body>
 </html>
