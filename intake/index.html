@@ -800,23 +800,67 @@
                 submittedAt: new Date().toLocaleString()
             };
  
-            // Send via FormSubmit.co (free service that sends emails)
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://formspree.io/f/mpqknvwq';
-            form.style.display = 'none';
+            // Build a detailed email body with all answers and analysis
+            const emailBody = `
+=== NEW AI CONSULTING LEAD ===
+Submitted: ${emailData.submittedAt}
  
+--- CONTACT INFO ---
+Name: ${emailData.fullName}
+Email: ${emailData.email}
+Phone: ${emailData.phone}
+Company: ${emailData.company}
+Industry: ${emailData.industry}
+ 
+--- THEIR ANSWERS ---
+Challenges: ${emailData.challenges}
+Current Situation: ${emailData.currentSituation}
+Specific Opportunities: ${emailData.specificChallenges}
+Business Goals: ${emailData.goals}
+Timeline: ${emailData.timeline}
+Budget: ${emailData.budget}
+Vision of Success: ${emailData.successLook}
+Additional Info: ${emailData.additionalInfo}
+ 
+--- ANALYSIS RESULTS SHOWN TO THEM ---
+Potential Time Savings: 40% per year through automation
+Cost Reduction: $30,000 per year through optimization
+ROI Timeline: 3-6 months typical implementation period
+AI Readiness: High - business is well-positioned
+            `;
+ 
+            // Send via Formspree with full details
+            const formEl = document.createElement('form');
+            formEl.method = 'POST';
+            formEl.action = 'https://formspree.io/f/mpqknvwq';
+            formEl.style.display = 'none';
+ 
+            // Add subject
+            const subjectInput = document.createElement('input');
+            subjectInput.type = 'hidden';
+            subjectInput.name = '_subject';
+            subjectInput.value = `New AI Evaluation Lead: ${emailData.fullName} - ${emailData.company}`;
+            formEl.appendChild(subjectInput);
+ 
+            // Add full message
+            const messageInput = document.createElement('input');
+            messageInput.type = 'hidden';
+            messageInput.name = 'message';
+            messageInput.value = emailBody;
+            formEl.appendChild(messageInput);
+ 
+            // Add individual fields for reference
             Object.keys(emailData).forEach(key => {
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = key;
                 input.value = emailData[key];
-                form.appendChild(input);
+                formEl.appendChild(input);
             });
  
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
+            document.body.appendChild(formEl);
+            formEl.submit();
+            document.body.removeChild(formEl);
         }
  
         // Form submission
@@ -851,3 +895,4 @@
     </script>
 </body>
 </html>
+ 
