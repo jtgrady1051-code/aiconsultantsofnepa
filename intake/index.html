@@ -796,6 +796,59 @@
                 submittedAt: new Date().toLocaleString()
             };
  
+            // Create and submit a real HTML form to Formspree
+            const formspreeForm = document.createElement('form');
+            formspreeForm.method = 'POST';
+            formspreeForm.action = 'https://formspree.io/f/mpqknvwq';
+            formspreeForm.target = 'hidden_iframe';
+            formspreeForm.style.display = 'none';
+ 
+            const fields = {
+                '_subject': 'New AI Evaluation Lead: ' + emailData.fullName + ' - ' + emailData.company,
+                'Name': emailData.fullName,
+                'Email': emailData.email,
+                'Phone': emailData.phone,
+                'Company': emailData.company,
+                'Industry': emailData.industry,
+                'Challenges': emailData.challenges,
+                'Current Situation': emailData.currentSituation,
+                'Specific Opportunities': emailData.specificChallenges,
+                'Business Goals': emailData.goals,
+                'Timeline': emailData.timeline,
+                'Budget': emailData.budget,
+                'Vision of Success': emailData.successLook,
+                'Additional Info': emailData.additionalInfo,
+                'Analysis - Time Savings': '40% per year through automation',
+                'Analysis - Cost Reduction': '$30,000 per year through optimization',
+                'Analysis - ROI Timeline': '3-6 months typical implementation',
+                'Analysis - AI Readiness': 'High - business is well-positioned',
+                'Submitted At': emailData.submittedAt
+            };
+ 
+            Object.keys(fields).forEach(function(key) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                formspreeForm.appendChild(input);
+            });
+ 
+            // Hidden iframe so page doesn't redirect
+            let iframe = document.getElementById('hidden_iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.name = 'hidden_iframe';
+                iframe.id = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
+ 
+            document.body.appendChild(formspreeForm);
+            formspreeForm.submit();
+            setTimeout(function() {
+                document.body.removeChild(formspreeForm);
+            }, 2000);
+ 
             // Build a detailed email body with all answers and analysis
             const emailBody = `
 === NEW AI CONSULTING LEAD ===
