@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Consultants of NEPA — Automate. Accelerate. Dominate.</title>
+  <title>AI Consultants of NEPA — Practical AI for Real Businesses</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -145,29 +145,35 @@
     }
     .btn-ghost:hover { border-color: var(--acid); color: var(--acid); }
 
-    /* ── STATS ── */
-    .stats {
+    /* ── TRUST BAR (replaces stats) ── */
+    .trust-bar {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 1px;
       background: var(--dim);
       border-top: 1px solid var(--dim);
       width: 100%;
     }
-    .stat-item {
+    .trust-item {
       background: var(--black);
       padding: 2.5rem 3rem;
       opacity: 0; animation: fadeUp 0.6s forwards;
     }
-    .stat-item:nth-child(1) { animation-delay: 0.8s; }
-    .stat-item:nth-child(2) { animation-delay: 0.95s; }
-    .stat-item:nth-child(3) { animation-delay: 1.1s; }
-    .stat-number {
+    .trust-item:nth-child(1) { animation-delay: 0.8s; }
+    .trust-item:nth-child(2) { animation-delay: 0.95s; }
+    .trust-item:nth-child(3) { animation-delay: 1.1s; }
+    .trust-headline {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 3.5rem;
+      font-size: 1.6rem;
       color: var(--acid);
       line-height: 1;
+      margin-bottom: 0.5rem;
     }
-    .stat-label { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.4rem; }
+    .trust-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      line-height: 1.5;
+    }
 
     /* ── SECTIONS ── */
     section { padding: 6rem 3rem; max-width: 1400px; margin: 0 auto; width: 100%; }
@@ -240,8 +246,54 @@
     .service-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.04em; margin-bottom: 0.75rem; }
     .service-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.65; }
 
-    /* ── FORM SECTION ── */
-    .form-section { width: 100%;
+    /* ── HONEST SECTION ── */
+    .honest-section {
+      width: 100%;
+      background: var(--mid);
+      border-top: 1px solid var(--dim);
+      border-bottom: 1px solid var(--dim);
+    }
+    .honest-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .honest-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 4vw, 3.8rem);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .honest-title span { color: var(--acid); }
+    .honest-body {
+      font-size: 0.95rem;
+      color: rgba(245,242,235,0.6);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .honest-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .honest-list li {
+      font-size: 0.9rem;
+      color: rgba(245,242,235,0.7);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      line-height: 1.5;
+    }
+    .honest-list li::before { content: '→'; color: var(--acid); font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── CTA SECTION ── */
+    .form-section {
+      width: 100%;
       background: var(--mid);
       position: relative;
       overflow: hidden;
@@ -251,69 +303,23 @@
       position: absolute; right: -2rem; top: 50%; transform: translateY(-50%);
       font-family: 'Bebas Neue', sans-serif;
       font-size: 20vw;
-      color: rgba(200,255,0,0.03);
+      color: rgba(255,107,43,0.03);
       pointer-events: none; white-space: nowrap;
     }
-    .form-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 5rem; align-items: start;
-      position: relative; z-index: 1;
-    }
-    .form-copy .section-title { font-size: clamp(2.5rem, 4vw, 4rem); }
-    .form-copy ul { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
-    .form-copy li {
-      font-size: 0.875rem; color: rgba(245,242,235,0.6);
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    .form-copy li::before { content: '→'; color: var(--acid); font-weight: 600; }
-
-    form { display: flex; flex-direction: column; gap: 1rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.4rem; }
-    input, select, textarea {
-      width: 100%;
-      background: rgba(245,242,235,0.05);
-      border: 1px solid rgba(245,242,235,0.12);
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      padding: 0.85rem 1rem;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
-      appearance: none;
-    }
-    input::placeholder, textarea::placeholder { color: rgba(245,242,235,0.25); }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--acid);
-      background: rgba(255,107,43,0.04);
-    }
-    select option { background: var(--mid); color: var(--white); }
-    textarea { resize: vertical; min-height: 110px; }
-    .form-submit {
-      background: var(--acid);
-      color: var(--black);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border: none; padding: 1.1rem;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      transition: transform 0.15s, box-shadow 0.15s;
-      width: 100%;
-    }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,107,43,0.45); }
-    .form-note { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
-
-    /* ── CTA SECTION ── */
     .cta-center {
       max-width: 700px; margin: 0 auto;
       text-align: center;
       position: relative; z-index: 1;
+      padding: 6rem 3rem;
     }
     .cta-center .section-title { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+    .cta-sub {
+      font-size: 1rem;
+      color: rgba(245,242,235,0.55);
+      line-height: 1.7;
+      margin: 1.25rem auto 2.5rem;
+      max-width: 480px;
+    }
     .cta-btn {
       display: inline-block;
       background: var(--acid);
@@ -326,9 +332,13 @@
       text-decoration: none;
       padding: 1.2rem 3rem;
       transition: transform 0.15s, box-shadow 0.15s;
-      margin-top: 0.5rem;
     }
     .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(255,107,43,0.45); }
+    .cta-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 1.25rem;
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -351,9 +361,8 @@
       nav { padding: 1rem 1.5rem; }
       .hero { padding: 8rem 1.5rem 3rem; }
       section { padding: 4rem 1.5rem; }
-      .stats { grid-template-columns: 1fr; }
-      .form-inner { grid-template-columns: 1fr; gap: 3rem; }
-      .form-row { grid-template-columns: 1fr; }
+      .trust-bar { grid-template-columns: 1fr; }
+      .honest-inner { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 1.5rem; }
       footer { flex-direction: column; text-align: center; }
     }
   </style>
@@ -363,7 +372,7 @@
   <!-- NAV -->
   <nav>
     <div class="nav-logo">AI Consultants of NEPA</div>
-    <button class="nav-cta" onclick="window.location.href='/intake'">Get Started</button>
+    <button class="nav-cta" onclick="window.location.href='/intake'">Free Phone Eval</button>
   </nav>
 
   <!-- HERO -->
@@ -371,29 +380,29 @@
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
     <div class="hero-content">
-      <div class="eyebrow">Northeastern PA's AI Partner</div>
-      <h1>Automate.<br/>Accelerate.<br/><span>Dominate.</span></h1>
-      <p class="hero-sub">We help local businesses keep pace with the AI revolution — automating everyday tasks so your team can focus on what actually moves the needle.</p>
+      <div class="eyebrow">Started in NEPA. Built for Any Business.</div>
+      <h1>Simple AI.<br/>Real<br/><span>Results.</span></h1>
+      <p class="hero-sub">We help businesses cut through the noise and use AI in ways that actually make a difference — no tech background, no jargon, no hype. Just practical tools that save you time and money.</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="window.location.href='/intake'">Start Your Assessment</button>
+        <button class="btn-primary" onclick="window.location.href='/intake'">Get Your Free Phone Evaluation</button>
         <button class="btn-ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">See What We Do</button>
       </div>
     </div>
   </section>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat-item">
-      <div class="stat-number">10×</div>
-      <div class="stat-label">Faster Task Completion</div>
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item">
+      <div class="trust-headline">No Jargon</div>
+      <div class="trust-label">We speak plain English — not tech. If it doesn't make sense to you, we haven't done our job.</div>
     </div>
-    <div class="stat-item">
-      <div class="stat-number">40%</div>
-      <div class="stat-label">Average Cost Reduction</div>
+    <div class="trust-item">
+      <div class="trust-headline">No Hype</div>
+      <div class="trust-label">We'll tell you straight if AI isn't the right fit for something. No pressure. No overselling.</div>
     </div>
-    <div class="stat-item">
-      <div class="stat-number">30 Days</div>
-      <div class="stat-label">To First Automation Live</div>
+    <div class="trust-item">
+      <div class="trust-headline">Real Results</div>
+      <div class="trust-label">We build the smallest thing that proves value first — then grow from there once you see it working.</div>
     </div>
   </div>
 
@@ -403,13 +412,29 @@
       <div class="how-header">
         <div class="section-label">Process</div>
         <div class="section-title">How It Works</div>
-        <p class="section-body">No fluff. No month-long discovery phases. We move fast, build smart, and deliver automations that actually stick.</p>
+        <p class="section-body">No long contracts. No confusing proposals. We start simple, show you something that works, and build from there.</p>
       </div>
       <div class="steps">
-        <div class="step"><div class="step-num">01</div><div class="step-title">Discovery Call</div><div class="step-desc">We map your current workflows and identify the highest-impact automation opportunities.</div></div>
-        <div class="step"><div class="step-num">02</div><div class="step-title">Custom Blueprint</div><div class="step-desc">You receive a tailored AI roadmap — specific tools, timelines, and projected ROI.</div></div>
-        <div class="step"><div class="step-num">03</div><div class="step-title">Build & Deploy</div><div class="step-desc">Our team builds and integrates your automations directly into your existing stack.</div></div>
-        <div class="step"><div class="step-num">04</div><div class="step-title">Optimize & Scale</div><div class="step-desc">We monitor performance and keep your systems ahead of the curve as AI evolves.</div></div>
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-title">Free Discovery Call</div>
+          <div class="step-desc">We listen first. You tell us what's eating your time or falling through the cracks — we map where AI can actually help.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-title">Plain-English Plan</div>
+          <div class="step-desc">No tech jargon. You get a straightforward recommendation — what to build, what it costs, and what it'll actually do for your business.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-title">We Build It</div>
+          <div class="step-desc">We handle the technical side completely. You don't need to learn anything new — just use the tool we hand you.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-title">You See It Working</div>
+          <div class="step-desc">We don't disappear after delivery. We make sure it's actually saving you time before we consider the job done.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -422,59 +447,67 @@
       <div class="service-card">
         <div class="service-icon">⚡</div>
         <div class="service-name">Workflow Automation</div>
-        <div class="service-desc">Eliminate repetitive manual tasks with intelligent automations that run 24/7 without human intervention.</div>
+        <div class="service-desc">Stop doing the same tasks over and over. We identify what's eating your team's time and automate it — simply and reliably.</div>
       </div>
       <div class="service-card">
         <div class="service-icon">🤖</div>
         <div class="service-name">AI Chatbots & Assistants</div>
-        <div class="service-desc">Deploy smart assistants for customer support, lead qualification, and internal operations.</div>
+        <div class="service-desc">Answer customer questions, qualify leads, and handle routine requests automatically — without hiring anyone new.</div>
       </div>
       <div class="service-card">
         <div class="service-icon">📊</div>
         <div class="service-name">Data & Reporting</div>
-        <div class="service-desc">Turn raw data into real-time dashboards and automated reports your team actually uses.</div>
+        <div class="service-desc">Turn the information you already have into reports and dashboards that actually help you make decisions.</div>
       </div>
       <div class="service-card">
         <div class="service-icon">🔗</div>
         <div class="service-name">Systems Integration</div>
-        <div class="service-desc">Connect your CRM, email, scheduling, and tools into one seamless automated ecosystem.</div>
+        <div class="service-desc">Connect the tools you already use — email, CRM, scheduling — so they work together instead of creating more manual work.</div>
       </div>
     </div>
   </section>
 
-  <!-- INTAKE FORM -->
+  <!-- HONEST SECTION -->
+  <div class="honest-section">
+    <div class="honest-inner">
+      <div>
+        <div class="section-label">Why We're Different</div>
+        <div class="honest-title">We Started in <span>a Skeptic's Market.</span></div>
+        <p class="honest-body">
+          Northeastern Pennsylvania isn't a place where people buy into hype easily. We built this business here on purpose — because earning trust in a tough market means doing things right from day one.
+        </p>
+        <p class="honest-body">
+          That same straightforward approach is what we bring to every client, everywhere.
+        </p>
+      </div>
+      <ul class="honest-list">
+        <li>We tell you honestly if something isn't worth building</li>
+        <li>We start with the smallest thing that proves value — not the biggest invoice</li>
+        <li>We work with your existing tools — no ripping everything out</li>
+        <li>No tech background required on your end — ever</li>
+        <li>Free phone evaluation — if we can't find something worth building, you owe us nothing</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CTA -->
   <section class="form-section" id="intake">
     <div class="cta-center">
       <div class="section-label">Get Started</div>
-      <div class="section-title">Let's Build Your AI Advantage</div>
-      <p class="section-body" style="margin: 1rem auto 2.5rem; max-width: 520px;">Take our free 5-step AI evaluation and find out exactly how automation can save you time and increase your revenue.</p>
-      <a href="/intake" class="cta-btn">
-        Start Your Free AI Evaluation Now →
-      </a>
+      <div class="section-title">Let's Find Out What AI Can Do For Your Business</div>
+      <p class="cta-sub">Take our free phone evaluation and get a straight answer — no pressure, no pitch, no obligation. Just honest guidance on where AI makes sense for you.</p>
+      <a href="/intake" class="cta-btn">Start Your Free Phone Evaluation →</a>
+      <div class="cta-note">Free phone call. No commitment. No tech knowledge needed.</div>
     </div>
   </section>
 
-    <!-- FOOTER -->
+  <!-- FOOTER -->
   <footer>
     <div class="footer-logo">AI Consultants of NEPA</div>
     <div class="footer-text">© 2025 AI Consultants of NEPA. All rights reserved.</div>
   </footer>
 
   <script>
-    function handleSubmit(e) {
-      e.preventDefault();
-      const btn = e.target.querySelector('.form-submit');
-      btn.textContent = '✓ Submitted — We\'ll Be In Touch!';
-      btn.style.background = '#333';
-      btn.style.color = '#FF6B2B';
-      btn.style.boxShadow = 'none';
-      btn.style.transform = 'none';
-      btn.disabled = true;
-    }
-
-
-
-    // Intersection observer for scroll reveals
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -484,7 +517,7 @@
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.step, .service-card').forEach(el => {
+    document.querySelectorAll('.step, .service-card, .honest-list li').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(20px)';
       el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
