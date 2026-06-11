@@ -1,1221 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Phone Evaluation — AI Consultants of NEPA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --black: #080808;
-            --navy: #0c1a2a;
-            --navy-mid: #0e2035;
-            --steel: #1a3454;
-            --accent: #FF6B2B;
-            --accent-glow: rgba(255,107,43,0.15);
-            --sky: #00d4ff;
-            --white: #f5f2eb;
-            --muted: #6a7a8a;
-            --dim: #1e2d3d;
-            --success: #4caf50;
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            background: var(--navy);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 300;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ── BACKGROUND ── */
-        .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background:
-                radial-gradient(ellipse 80% 60% at 90% 10%, rgba(255,107,43,0.05) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 10% 90%, rgba(0,212,255,0.04) 0%, transparent 60%),
-                linear-gradient(160deg, #0c1a2a 0%, #0a1520 100%);
-        }
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            opacity: 0.025;
-            background-image:
-                linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-
-        /* ── NAV ── */
-        nav {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.25rem 3rem;
-            border-bottom: 1px solid rgba(255,107,43,0.1);
-            background: rgba(8,8,8,0.6);
-            backdrop-filter: blur(12px);
-        }
-        .nav-logo {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.4rem;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-        }
-        .nav-back {
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .nav-back:hover { color: var(--accent); }
-
-        /* ── PAGE WRAPPER ── */
-        .page {
-            position: relative;
-            z-index: 1;
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 4rem 2rem 6rem;
-        }
-
-        /* ── PAGE HEADER ── */
-        .page-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeUp 0.6s 0.1s both;
-        }
-        .page-eyebrow {
-            font-size: 0.65rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 12px;
-        }
-        .page-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
-            letter-spacing: 0.02em;
-            line-height: 1;
-            margin-bottom: 14px;
-        }
-        .page-sub {
-            font-size: 0.9rem;
-            color: rgba(245,242,235,0.55);
-            line-height: 1.7;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        /* ── PROGRESS ── */
-        .progress-wrap {
-            margin-bottom: 2.5rem;
-            animation: fadeUp 0.6s 0.2s both;
-        }
-        .progress-track {
-            height: 2px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), #ff9a5c);
-            border-radius: 2px;
-            transition: width 0.4s ease;
-        }
-        .progress-label {
-            font-size: 0.65rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--muted);
-            text-align: right;
-        }
-
-        /* ── FORM CARD ── */
-        .form-card {
-            background: rgba(14,32,53,0.7);
-            border: 1px solid rgba(255,107,43,0.12);
-            border-radius: 12px;
-            padding: 2.5rem;
-            backdrop-filter: blur(10px);
-            animation: fadeUp 0.6s 0.3s both;
-        }
-
-        /* ── STEP ── */
-        .step { display: none; }
-        .step.active {
-            display: block;
-            animation: fadeIn 0.35s ease both;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .step-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-            letter-spacing: 0.02em;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-        .step-title span { color: var(--accent); }
-        .step-desc {
-            font-size: 0.82rem;
-            color: var(--muted);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            letter-spacing: 0.3px;
-        }
-
-        /* ── FORM ELEMENTS ── */
-        .form-group { margin-bottom: 1.5rem; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-        label {
-            display: block;
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: rgba(245,242,235,0.6);
-            margin-bottom: 7px;
-        }
-        label .req { color: var(--accent); margin-left: 2px; }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        textarea,
-        select {
-            width: 100%;
-            background: rgba(8,20,35,0.6);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 300;
-            padding: 0.85rem 1rem;
-            border-radius: 6px;
-            outline: none;
-            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-            appearance: none;
-        }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--accent);
-            background: rgba(255,107,43,0.04);
-            box-shadow: 0 0 0 3px rgba(255,107,43,0.08);
-        }
-        input.error, textarea.error, select.error {
-            border-color: #ff4444;
-            background: rgba(255,68,68,0.05);
-        }
-        textarea { resize: vertical; min-height: 90px; }
-        select option { background: #0e2035; color: var(--white); }
-
-        .err-msg {
-            font-size: 0.72rem;
-            color: #ff6b6b;
-            margin-top: 5px;
-            display: none;
-        }
-        .err-msg.show { display: block; }
-
-        /* ── CHOICE GRIDS ── */
-        .choices {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 10px;
-        }
-        .choice-item {
-            position: relative;
-        }
-        .choice-item input[type="radio"],
-        .choice-item input[type="checkbox"] {
-            position: absolute;
-            opacity: 0;
-            width: 0; height: 0;
-        }
-        .choice-item label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(8,20,35,0.5);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 6px;
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            font-size: 0.82rem;
-            letter-spacing: 0.05em;
-            text-transform: none;
-            color: rgba(245,242,235,0.65);
-            transition: all 0.2s;
-            margin: 0;
-            line-height: 1.3;
-        }
-        .choice-item label:hover {
-            border-color: rgba(255,107,43,0.3);
-            color: var(--white);
-            background: rgba(255,107,43,0.05);
-        }
-        .choice-item input:checked + label {
-            border-color: var(--accent);
-            background: rgba(255,107,43,0.1);
-            color: var(--white);
-        }
-        .choice-item .choice-icon { font-size: 1.1rem; flex-shrink: 0; }
-
-        /* ── BUTTONS ── */
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 2rem;
-            align-items: center;
-        }
-        .btn-back {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--muted);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding: 0.85rem 1.6rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        .btn-back:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-next, .btn-submit {
-            flex: 1;
-            background: var(--accent);
-            color: var(--black);
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            border: none;
-            padding: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .btn-next:hover, .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(255,107,43,0.4);
-        }
-
-        /* ── LOADING ── */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--accent);
-        }
-        .loading.show { display: block; }
-        .spinner {
-            display: inline-block;
-            width: 24px; height: 24px;
-            border: 2px solid rgba(255,107,43,0.2);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 10px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading p { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-
-        /* ── RESULTS ── */
-        .results { display: none; }
-        .results.show {
-            display: block;
-            animation: fadeIn 0.5s ease both;
-        }
-
-        .results-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,107,43,0.12);
-        }
-        .results-eyebrow {
-            font-size: 0.6rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-        .results-name {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-        .results-name span { color: var(--accent); }
-        .results-sub {
-            font-size: 0.82rem;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-
-        /* Score cards */
-        .score-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 1.5rem;
-        }
-        .score-card {
-            background: rgba(8,20,35,0.6);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 8px;
-            padding: 1.25rem 1rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .score-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-        }
-        .score-card.green::before { background: #4caf50; }
-        .score-card.amber::before { background: #ff9800; }
-        .score-card.red::before { background: #f44336; }
-        .score-card.accent::before { background: var(--accent); }
-
-        .score-label {
-            font-size: 0.58rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-        .score-value {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.2rem;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-        .score-card.green .score-value { color: #81c784; }
-        .score-card.amber .score-value { color: #ffb74d; }
-        .score-card.red .score-value { color: #ef9a9a; }
-        .score-card.accent .score-value { color: var(--accent); }
-        .score-unit {
-            font-size: 0.65rem;
-            color: var(--muted);
-            line-height: 1.4;
-        }
-
-        /* Readiness bar */
-        .readiness-bar-wrap {
-            background: rgba(8,20,35,0.6);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 8px;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .readiness-bar-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .readiness-bar-label span:first-child {
-            font-size: 0.65rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-        .readiness-badge {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            padding: 3px 10px;
-            border-radius: 3px;
-        }
-        .readiness-badge.high { background: rgba(76,175,80,0.2); color: #81c784; border: 1px solid rgba(76,175,80,0.3); }
-        .readiness-badge.moderate { background: rgba(255,152,0,0.2); color: #ffb74d; border: 1px solid rgba(255,152,0,0.3); }
-        .readiness-badge.early { background: rgba(244,67,54,0.15); color: #ef9a9a; border: 1px solid rgba(244,67,54,0.25); }
-        .readiness-track {
-            height: 6px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .readiness-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 1s ease;
-        }
-        .readiness-fill.high { background: linear-gradient(90deg, #4caf50, #81c784); }
-        .readiness-fill.moderate { background: linear-gradient(90deg, #ff9800, #ffb74d); }
-        .readiness-fill.early { background: linear-gradient(90deg, #f44336, #ef9a9a); }
-        .readiness-note {
-            font-size: 0.78rem;
-            color: rgba(245,242,235,0.5);
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-
-        /* Services */
-        .services-section {
-            background: rgba(8,20,35,0.5);
-            border: 1px solid rgba(255,107,43,0.15);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .services-section-title {
-            font-size: 0.6rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-        .service-match {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-        }
-        .service-match:last-child { border-bottom: none; padding-bottom: 0; }
-        .service-match-icon {
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-        .service-match-body {}
-        .service-match-name {
-            font-weight: 600;
-            font-size: 0.88rem;
-            color: var(--white);
-            margin-bottom: 3px;
-        }
-        .service-match-desc {
-            font-size: 0.78rem;
-            color: var(--muted);
-            line-height: 1.5;
-        }
-        .service-match-cta {
-            font-size: 0.7rem;
-            color: var(--accent);
-            letter-spacing: 0.5px;
-            margin-top: 3px;
-        }
-
-        /* Next steps */
-        .next-steps-section {
-            background: rgba(8,20,35,0.5);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .next-steps-title {
-            font-size: 0.6rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 1rem;
-        }
-        .next-step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 8px 0;
-        }
-        .next-step-num {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.1rem;
-            color: var(--accent);
-            flex-shrink: 0;
-            width: 20px;
-            line-height: 1.4;
-        }
-        .next-step-text {
-            font-size: 0.82rem;
-            color: rgba(245,242,235,0.65);
-            line-height: 1.6;
-        }
-
-        /* Calendly CTA */
-        .calendly-cta {
-            background: linear-gradient(135deg, rgba(255,107,43,0.12), rgba(255,107,43,0.06));
-            border: 1px solid rgba(255,107,43,0.25);
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-        }
-        .calendly-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            letter-spacing: 0.04em;
-            margin-bottom: 8px;
-        }
-        .calendly-sub {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-        .btn-calendly {
-            display: inline-block;
-            background: var(--accent);
-            color: var(--black);
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600;
-            font-size: 0.88rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            text-decoration: none;
-            padding: 1.1rem 2.5rem;
-            border-radius: 6px;
-            transition: transform 0.15s, box-shadow 0.15s;
-            cursor: pointer;
-            border: none;
-        }
-        .btn-calendly:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 32px rgba(255,107,43,0.45);
-        }
-        .calendly-note {
-            font-size: 0.7rem;
-            color: var(--muted);
-            margin-top: 10px;
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 600px) {
-            nav { padding: 1rem 1.5rem; }
-            .page { padding: 2.5rem 1rem 4rem; }
-            .form-card { padding: 1.5rem; }
-            .form-row { grid-template-columns: 1fr; }
-            .score-grid { grid-template-columns: 1fr; }
-            .choices { grid-template-columns: 1fr 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free AI Assessment | AI Consultants of NEPA</title>
+<meta name="description" content="Chat with Jamie and get a straight answer about where AI can save your business time and money. Free, about 5 minutes, no tech knowledge needed.">
+<style>
+  :root{
+    --bg:#0b1220; --panel:#111b33; --bubble:#1a2742; --user:#2563eb;
+    --text:#e8edf7; --muted:#93a1bd; --accent:#3b82f6; --border:#233252;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+  header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+  header a{color:var(--muted);text-decoration:none;font-size:14px;}
+  header a:hover{color:var(--text);}
+  .brand{font-weight:600;font-size:15px;margin-left:auto;}
+  main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:20px 16px 32px;display:flex;flex-direction:column;}
+  .intro{text-align:center;margin-bottom:18px;}
+  .intro h1{font-size:24px;margin-bottom:6px;}
+  .intro p{color:var(--muted);font-size:14px;}
+  .chatbox{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;flex:1;}
+  .chathead{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#fff;}
+  .chathead .who{font-size:14px;font-weight:600;}
+  .chathead .sub{font-size:12px;color:var(--muted);}
+  .dot{width:8px;height:8px;border-radius:50%;background:#34d399;margin-left:auto;}
+  #msgs{display:flex;flex-direction:column;gap:10px;padding:16px 0;flex:1;min-height:320px;}
+  .jamie,.user{padding:11px 14px;border-radius:14px;font-size:15px;line-height:1.5;max-width:86%;white-space:pre-wrap;word-wrap:break-word;}
+  .jamie{background:var(--bubble);border-top-left-radius:4px;align-self:flex-start;}
+  .user{background:var(--user);color:#fff;border-top-right-radius:4px;align-self:flex-end;}
+  #chips{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:10px;}
+  #chips button{background:transparent;border:1px solid var(--accent);color:var(--text);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer;}
+  #chips button:hover{background:var(--accent);}
+  .inrow{display:flex;gap:8px;}
+  #inp{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 14px;font-size:15px;outline:none;}
+  #inp:focus{border-color:var(--accent);}
+  #sendbtn{background:var(--accent);border:none;border-radius:10px;color:#fff;padding:0 18px;font-size:15px;font-weight:600;cursor:pointer;}
+  #sendbtn:disabled,#inp:disabled{opacity:.5;cursor:default;}
+  .typing{display:flex;gap:5px;align-items:center;background:var(--bubble);border-radius:14px;border-top-left-radius:4px;padding:14px;align-self:flex-start;}
+  .typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;} .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;align-self:stretch;}
+  .card .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+  .score{font-size:34px;font-weight:700;}
+  .score small{font-size:13px;color:var(--muted);font-weight:400;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px;}
+  .pills span{font-size:12px;background:var(--bubble);border:1px solid var(--border);padding:5px 11px;border-radius:999px;}
+  .book{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:12px 20px;border-radius:10px;}
+  .fine{font-size:12px;color:var(--muted);margin-top:10px;}
+  .errrow{align-self:flex-start;}
+  .errrow button{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:16px;}
+</style>
 </head>
 <body>
-
-<div class="bg-layer"></div>
-<div class="bg-grid"></div>
-
-<nav>
-    <div class="nav-logo">AI Consultants of NEPA</div>
-    <a href="/" class="nav-back">← Back to site</a>
-</nav>
-
-<div class="page">
-
-    <div class="page-header">
-        <div class="page-eyebrow">Free — No Obligation — No Tech Knowledge Required</div>
-        <div class="page-title">Schedule Your Free<br>Phone Evaluation</div>
-        <p class="page-sub">Answer 5 quick questions. We'll show you exactly where AI can help your business — then get on a call to walk through it together.</p>
+<header>
+  <a href="https://aiconsultantsofnepa.com/">&larr; Back to site</a>
+  <span class="brand">AI Consultants of NEPA</span>
+</header>
+<main>
+  <div class="intro">
+    <h1>Find out what AI can do for your business</h1>
+    <p>Chat with Jamie. About 5 minutes, no commitment, no tech knowledge needed.</p>
+  </div>
+  <div class="chatbox">
+    <div class="chathead">
+      <div class="avatar">J</div>
+      <div>
+        <div class="who">Jamie</div>
+        <div class="sub">AI assistant, answers in real time</div>
+      </div>
+      <div class="dot" title="Online"></div>
     </div>
-
-    <div class="progress-wrap">
-        <div class="progress-track">
-            <div class="progress-fill" id="progressFill" style="width:20%"></div>
-        </div>
-        <div class="progress-label" id="progressLabel">Step 1 of 5</div>
+    <div id="msgs"></div>
+    <div id="chips"></div>
+    <div class="inrow">
+      <input id="inp" type="text" maxlength="2000" placeholder="Type your answer..." autocomplete="off" disabled>
+      <button id="sendbtn" disabled>Send</button>
     </div>
-
-    <div class="form-card">
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Analyzing your responses...</p>
-        </div>
-
-        <form id="intakeForm">
-
-            <!-- STEP 1 -->
-            <div class="step active" id="step-1">
-                <div class="step-title">Let's start with <span>the basics</span></div>
-                <div class="step-desc">No commitment — just enough to personalize your evaluation.</div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fullName">Full Name <span class="req">*</span></label>
-                        <input type="text" id="fullName" name="fullName" placeholder="John Doe">
-                        <div class="err-msg" id="err-fullName">Please enter your name</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Business Name <span class="req">*</span></label>
-                        <input type="text" id="company" name="company" placeholder="Your Business">
-                        <div class="err-msg" id="err-company">Please enter your business name</div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">Email <span class="req">*</span></label>
-                        <input type="email" id="email" name="email" placeholder="you@yourbusiness.com">
-                        <div class="err-msg" id="err-email">Please enter a valid email</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number <span class="req">*</span></label>
-                        <input type="tel" id="phone" name="phone" placeholder="(570) 555-1234">
-                        <div class="err-msg" id="err-phone">Please enter your phone number</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Industry <span class="req">*</span></label>
-                    <div class="choices">
-                        <div class="choice-item"><input type="radio" id="ind-construction" name="industry" value="Construction"><label for="ind-construction"><span class="choice-icon">🏗️</span>Construction</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-legal" name="industry" value="Legal"><label for="ind-legal"><span class="choice-icon">⚖️</span>Law Firm</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-accounting" name="industry" value="Accounting"><label for="ind-accounting"><span class="choice-icon">📊</span>Accounting</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-healthcare" name="industry" value="Healthcare"><label for="ind-healthcare"><span class="choice-icon">🏥</span>Healthcare</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-retail" name="industry" value="Retail"><label for="ind-retail"><span class="choice-icon">🛍️</span>Retail</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-services" name="industry" value="Professional Services"><label for="ind-services"><span class="choice-icon">💼</span>Prof. Services</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-trades" name="industry" value="Trades"><label for="ind-trades"><span class="choice-icon">🔧</span>Trades</label></div>
-                        <div class="choice-item"><input type="radio" id="ind-other" name="industry" value="Other"><label for="ind-other"><span class="choice-icon">📋</span>Other</label></div>
-                    </div>
-                    <div class="err-msg" id="err-industry">Please select your industry</div>
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
-                </div>
-            </div>
-
-            <!-- STEP 2 -->
-            <div class="step" id="step-2">
-                <div class="step-title">What's <span>eating your time?</span></div>
-                <div class="step-desc">Check everything that applies — the more you share, the more useful your evaluation will be.</div>
-
-                <div class="form-group">
-                    <label>Biggest operational challenges <span class="req">*</span></label>
-                    <div class="choices">
-                        <div class="choice-item"><input type="checkbox" id="ch-manual" name="challenges" value="Manual processes"><label for="ch-manual"><span class="choice-icon">🔁</span>Repetitive manual tasks</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-data" name="challenges" value="Data management"><label for="ch-data"><span class="choice-icon">📂</span>Data management</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-efficiency" name="challenges" value="Efficiency"><label for="ch-efficiency"><span class="choice-icon">⏱️</span>Too slow / inefficient</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-costs" name="challenges" value="High costs"><label for="ch-costs"><span class="choice-icon">💸</span>High operating costs</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-scaling" name="challenges" value="Scaling"><label for="ch-scaling"><span class="choice-icon">📈</span>Hard to scale</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-integration" name="challenges" value="System integration"><label for="ch-integration"><span class="choice-icon">🔗</span>Disconnected tools</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-customer" name="challenges" value="Customer communication"><label for="ch-customer"><span class="choice-icon">💬</span>Customer follow-up</label></div>
-                        <div class="choice-item"><input type="checkbox" id="ch-reporting" name="challenges" value="Reporting"><label for="ch-reporting"><span class="choice-icon">📋</span>Reports take too long</label></div>
-                    </div>
-                    <div class="err-msg" id="err-challenges">Please select at least one challenge</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="currentSituation">Describe what's falling through the cracks <span class="req">*</span></label>
-                    <textarea id="currentSituation" name="currentSituation" placeholder="What does your team do every day that they hate doing? What takes way longer than it should?"></textarea>
-                    <div class="err-msg" id="err-currentSituation">Please describe your current situation</div>
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
-                    <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
-                </div>
-            </div>
-
-            <!-- STEP 3 -->
-            <div class="step" id="step-3">
-                <div class="step-title">Where do you want <span>to improve?</span></div>
-                <div class="step-desc">Be as specific as you like — this shapes the services we recommend for you.</div>
-
-                <div class="form-group">
-                    <label for="specificChallenges">What would make the biggest difference in your business right now? <span class="req">*</span></label>
-                    <textarea id="specificChallenges" name="specificChallenges" placeholder="e.g., I spend 3 hours a day answering the same emails. I wish someone else could handle customer questions on our website after hours..."></textarea>
-                    <div class="err-msg" id="err-specificChallenges">Please describe what you'd like to improve</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="goals">What does a win look like for your business in the next 6–12 months? <span class="req">*</span></label>
-                    <textarea id="goals" name="goals" placeholder="e.g., More time to focus on actual work, less admin..."></textarea>
-                    <div class="err-msg" id="err-goals">Please share your goals</div>
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
-                    <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
-                </div>
-            </div>
-
-            <!-- STEP 4 -->
-            <div class="step" id="step-4">
-                <div class="step-title">Timeline & <span>budget</span></div>
-                <div class="step-desc">No pressure — this helps us recommend where to start.</div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="timeline">When are you looking to get started? <span class="req">*</span></label>
-                        <select id="timeline" name="timeline">
-                            <option value="">Select...</option>
-                            <option value="Immediate">Right away — I'm ready</option>
-                            <option value="Short-term">Within the next 1–3 months</option>
-                            <option value="Medium-term">3–6 months from now</option>
-                            <option value="Exploring">Just exploring for now</option>
-                        </select>
-                        <div class="err-msg" id="err-timeline">Please select a timeline</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="budget">Rough budget range for a solution? <span class="req">*</span></label>
-                        <select id="budget" name="budget">
-                            <option value="">Select...</option>
-                            <option value="Under $2,500">Under $2,500</option>
-                            <option value="$2,500 – $5,000">$2,500 – $5,000</option>
-                            <option value="$5,000 – $10,000">$5,000 – $10,000</option>
-                            <option value="$10,000+">$10,000+</option>
-                        </select>
-                        <div class="err-msg" id="err-budget">Please select a budget range</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="teamSize">How many people are on your team? <span class="req">*</span></label>
-                    <select id="teamSize" name="teamSize">
-                        <option value="">Select...</option>
-                        <option value="1">Just me</option>
-                        <option value="5">2–5 people</option>
-                        <option value="15">6–20 people</option>
-                        <option value="50">21–50 people</option>
-                        <option value="100">50+ people</option>
-                    </select>
-                    <div class="err-msg" id="err-teamSize">Please select your team size</div>
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
-                    <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
-                </div>
-            </div>
-
-            <!-- STEP 5 -->
-            <div class="step" id="step-5">
-                <div class="step-title">Almost <span>done</span></div>
-                <div class="step-desc">Anything else we should know before your evaluation? Completely optional.</div>
-
-                <div class="form-group">
-                    <label for="additionalInfo">Anything else on your mind?</label>
-                    <textarea id="additionalInfo" name="additionalInfo" placeholder="Any tools you currently use, specific concerns, or questions for us..."></textarea>
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn-back" onclick="prevStep()">← Back</button>
-                    <button type="submit" class="btn-submit">See My Results →</button>
-                </div>
-            </div>
-
-        </form>
-
-        <!-- RESULTS -->
-        <div class="results" id="results">
-
-            <div class="results-header">
-                <div class="results-eyebrow">Your Personalized Evaluation</div>
-                <div class="results-name" id="resultsName">Here's What We Found, <span id="firstName">—</span></div>
-                <div class="results-sub">Based on your answers, here's where AI can make a real difference for your business.</div>
-            </div>
-
-            <!-- Readiness bar -->
-            <div class="readiness-bar-wrap">
-                <div class="readiness-bar-label">
-                    <span>AI Readiness Score</span>
-                    <span class="readiness-badge" id="readinessBadge">High</span>
-                </div>
-                <div class="readiness-track">
-                    <div class="readiness-fill" id="readinessFill" style="width:0%"></div>
-                </div>
-                <div class="readiness-note" id="readinessNote"></div>
-            </div>
-
-            <!-- Score cards -->
-            <div class="score-grid">
-                <div class="score-card accent">
-                    <div class="score-label">Readiness Score</div>
-                    <div class="score-value" id="scoreValue">—</div>
-                    <div class="score-unit">out of 100</div>
-                </div>
-                <div class="score-card green">
-                    <div class="score-label">Est. Time Savings</div>
-                    <div class="score-value" id="timeSavings">—</div>
-                    <div class="score-unit">of weekly admin time</div>
-                </div>
-                <div class="score-card green">
-                    <div class="score-label">Potential Annual Savings</div>
-                    <div class="score-value" id="costSavings">—</div>
-                    <div class="score-unit">through automation</div>
-                </div>
-            </div>
-
-            <!-- Recommended services -->
-            <div class="services-section">
-                <div class="services-section-title">▸ Services That Match Your Needs</div>
-                <div id="serviceMatches"></div>
-            </div>
-
-            <!-- Next steps -->
-            <div class="next-steps-section">
-                <div class="next-steps-title">▸ What Happens Next</div>
-                <div class="next-step-item">
-                    <div class="next-step-num">01</div>
-                    <div class="next-step-text">We review your answers before the call so we're not wasting your time with questions you already answered.</div>
-                </div>
-                <div class="next-step-item">
-                    <div class="next-step-num">02</div>
-                    <div class="next-step-text">On the call we walk through your specific situation — plain English, no tech jargon, no pressure.</div>
-                </div>
-                <div class="next-step-item">
-                    <div class="next-step-num">03</div>
-                    <div class="next-step-text">If there's a fit, we'll tell you exactly what we'd build, what it costs, and what it'll do for your business.</div>
-                </div>
-                <div class="next-step-item">
-                    <div class="next-step-num">04</div>
-                    <div class="next-step-text">If it's not the right time or not the right fit — we'll tell you that too. No hard sell. Ever.</div>
-                </div>
-            </div>
-
-            <!-- Calendly -->
-            <div class="calendly-cta">
-                <div class="calendly-title">Ready to Talk?</div>
-                <div class="calendly-sub">Pick a time that works for you. The call is free, takes about 20–30 minutes, and you'll walk away with a clear picture of what's possible.</div>
-                <a href="https://calendly.com/jtgrady1051" target="_blank" class="btn-calendly">📅 Schedule Your Free Call</a>
-                <div class="calendly-note">Free phone call · No commitment · No tech knowledge needed</div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
+  </div>
+</main>
+<footer>This chat runs on the same AI we build for our clients. &copy; 2026 AI Consultants of NEPA</footer>
 <script>
-    let currentStep = 1;
-    const totalSteps = 5;
+(function(){
+  var msgs=document.getElementById('msgs'),chipsEl=document.getElementById('chips'),
+      inp=document.getElementById('inp'),sendBtn=document.getElementById('sendbtn');
+  var history=[];
+  var CALENDLY='https://calendly.com/jtgrady1051';
+  // TRANSITION NOTE: while this site is served by GitHub Pages, the backend
+  // lives in the jamie-intake Vercel project, so we call it by full address.
+  // After the domain moves to Vercel (which hosts /api in this same repo),
+  // change this to '/api/assess' for a same-origin call and retire the
+  // jamie-intake project.
+  var API_BASE='https://jamie-intake.vercel.app/api/assess';
 
-    function updateProgress() {
-        const pct = (currentStep / totalSteps) * 100;
-        document.getElementById('progressFill').style.width = pct + '%';
-        document.getElementById('progressLabel').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
-    }
+  function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+  function scrollDown(){var el=msgs.lastElementChild;if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  function bubble(cls,html){var b=document.createElement('div');b.className=cls;b.innerHTML=html;msgs.appendChild(b);scrollDown();return b;}
+  function setInput(on){inp.disabled=!on;sendBtn.disabled=!on;if(on)inp.focus();}
+  function showTyping(){var t=document.createElement('div');t.className='typing';t.innerHTML='<span></span><span></span><span></span>';msgs.appendChild(t);scrollDown();return t;}
 
-    function nextStep() {
-        if (!validateStep(currentStep)) return;
-        currentStep++;
-        showStep(currentStep);
-        updateProgress();
-        document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  function renderText(t){
+    var h=esc(t);
+    h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+    return h;
+  }
 
-    function prevStep() {
-        currentStep--;
-        showStep(currentStep);
-        updateProgress();
-        document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  function parseReply(raw){
+    var out={text:raw,chips:null,complete:null};
+    var ac=raw.match(/ASSESSMENT_COMPLETE:\s*(\{[\s\S]*\})/);
+    if(ac){try{out.complete=JSON.parse(ac[1]);}catch(e){} out.text=out.text.replace(ac[0],'');}
+    var qr=out.text.match(/QUICK_REPLIES:\s*(\[[^\]]*\])/);
+    if(qr){try{out.chips=JSON.parse(qr[1]);}catch(e){} out.text=out.text.replace(qr[0],'');}
+    out.text=out.text.trim();
+    return out;
+  }
 
-    function showStep(n) {
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        const el = document.getElementById('step-' + n);
-        if (el) el.classList.add('active');
-    }
-
-    function validateStep(step) {
-        let valid = true;
-        const rules = {
-            1: [
-                { id: 'fullName', type: 'text' },
-                { id: 'company', type: 'text' },
-                { id: 'email', type: 'email' },
-                { id: 'phone', type: 'text' },
-                { id: 'industry', type: 'radio', name: 'industry' }
-            ],
-            2: [
-                { id: 'challenges', type: 'checkbox', name: 'challenges' },
-                { id: 'currentSituation', type: 'text' }
-            ],
-            3: [
-                { id: 'specificChallenges', type: 'text' },
-                { id: 'goals', type: 'text' }
-            ],
-            4: [
-                { id: 'timeline', type: 'select' },
-                { id: 'budget', type: 'select' },
-                { id: 'teamSize', type: 'select' }
-            ],
-            5: []
-        };
-
-        (rules[step] || []).forEach(rule => {
-            let ok = false;
-            if (rule.type === 'radio') {
-                ok = !!document.querySelector('input[name="' + rule.name + '"]:checked');
-            } else if (rule.type === 'checkbox') {
-                ok = !!document.querySelector('input[name="' + rule.name + '"]:checked');
-            } else if (rule.type === 'email') {
-                const el = document.getElementById(rule.id);
-                ok = el && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
-            } else {
-                const el = document.getElementById(rule.id);
-                ok = el && el.value.trim() !== '';
-            }
-            const errEl = document.getElementById('err-' + rule.id);
-            if (!ok) {
-                if (errEl) errEl.classList.add('show');
-                valid = false;
-            } else {
-                if (errEl) errEl.classList.remove('show');
-            }
-        });
-        return valid;
-    }
-
-    // ── SCORING ENGINE ──
-    function calculateScore() {
-        let score = 0;
-
-        // Industry scoring
-        const industry = (document.querySelector('input[name="industry"]:checked') || {}).value || '';
-        const industryScores = {
-            'Legal': 18, 'Accounting': 18, 'Professional Services': 16,
-            'Healthcare': 14, 'Retail': 13, 'Trades': 12,
-            'Construction': 11, 'Other': 10
-        };
-        score += industryScores[industry] || 10;
-
-        // Challenges (each = +8, max 32)
-        const challenges = document.querySelectorAll('input[name="challenges"]:checked');
-        score += Math.min(challenges.length * 8, 32);
-
-        // Timeline
-        const timeline = document.getElementById('timeline').value;
-        const timelineScores = { 'Immediate': 20, 'Short-term': 15, 'Medium-term': 10, 'Exploring': 5 };
-        score += timelineScores[timeline] || 5;
-
-        // Budget
-        const budget = document.getElementById('budget').value;
-        const budgetScores = { '$10,000+': 20, '$5,000 – $10,000': 16, '$2,500 – $5,000': 12, 'Under $2,500': 8 };
-        score += budgetScores[budget] || 8;
-
-        return Math.min(score, 100);
-    }
-
-    function getTimeSavings(challenges) {
-        let pct = 0;
-        const vals = Array.from(challenges).map(c => c.value);
-        if (vals.includes('Manual processes')) pct += 15;
-        if (vals.includes('Efficiency')) pct += 10;
-        if (vals.includes('Data management')) pct += 8;
-        if (vals.includes('System integration')) pct += 8;
-        if (vals.includes('Customer communication')) pct += 7;
-        if (vals.includes('Reporting')) pct += 7;
-        if (vals.includes('High costs')) pct += 5;
-        if (vals.includes('Scaling')) pct += 5;
-        return Math.min(pct, 45);
-    }
-
-    function getCostSavings(budget, teamSize) {
-        const ts = parseInt(teamSize) || 1;
-        const ranges = {
-            'Under $2,500':       [3000,  8000],
-            '$2,500 – $5,000':    [8000,  18000],
-            '$5,000 – $10,000':   [18000, 35000],
-            '$10,000+':           [35000, 75000]
-        };
-        let range = ranges[budget] || [3000, 8000];
-        // Scale slightly by team size
-        const multiplier = ts <= 1 ? 1 : ts <= 5 ? 1.2 : ts <= 15 ? 1.5 : ts <= 50 ? 1.8 : 2.2;
-        const low = Math.round(range[0] * multiplier / 1000) * 1000;
-        const high = Math.round(range[1] * multiplier / 1000) * 1000;
-        return '$' + low.toLocaleString() + '–$' + high.toLocaleString();
-    }
-
-    function getServiceMatches(challenges, industry) {
-        const vals = Array.from(challenges).map(c => c.value);
-        const services = [];
-
-        if (vals.includes('Manual processes') || vals.includes('Efficiency')) {
-            services.push({
-                icon: '⚡',
-                name: 'Workflow Automation',
-                desc: 'Your biggest time drain is likely tasks your team does the same way every day. We identify the top 2–3 and automate them — most businesses reclaim 8–12 hours per week.',
-                cta: 'We\'ll show you exactly which workflows on your free call.'
-            });
-        }
-        if (vals.includes('Customer communication') || vals.includes('Scaling')) {
-            services.push({
-                icon: '🤖',
-                name: 'AI Chatbots & Assistants',
-                desc: 'Stop answering the same questions after hours. A properly built assistant handles routine customer inquiries automatically — without you hiring anyone new.',
-                cta: 'We\'ll walk through what this looks like for your industry on your call.'
-            });
-        }
-        if (vals.includes('Data management') || vals.includes('Reporting')) {
-            services.push({
-                icon: '📊',
-                name: 'Data & Reporting',
-                desc: 'If your team is manually pulling reports or copying data between tools, that\'s hours you\'re paying for that AI can handle in seconds.',
-                cta: 'We\'ll identify your highest-value reporting opportunity on your call.'
-            });
-        }
-        if (vals.includes('System integration') || vals.includes('High costs')) {
-            services.push({
-                icon: '🔗',
-                name: 'Systems Integration',
-                desc: 'Disconnected tools create hidden costs — double entry, missed follow-ups, errors. We connect your existing stack so everything talks to each other automatically.',
-                cta: 'We\'ll map your current tools and show you what\'s possible on your call.'
-            });
-        }
-
-        // Fallback
-        if (services.length === 0) {
-            services.push({
-                icon: '⚡',
-                name: 'Workflow Automation',
-                desc: 'Almost every business we talk to finds at least one workflow that AI can handle faster and more reliably than doing it manually.',
-                cta: 'We\'ll find yours on your free call.'
-            });
-        }
-
-        return services.slice(0, 3);
-    }
-
-    function showResults() {
-        const score = calculateScore();
-        const challenges = document.querySelectorAll('input[name="challenges"]:checked');
-        const budget = document.getElementById('budget').value;
-        const teamSize = document.getElementById('teamSize').value;
-        const firstName = (document.getElementById('fullName').value || '').split(' ')[0];
-        const industry = (document.querySelector('input[name="industry"]:checked') || {}).value || '';
-
-        // Name
-        document.getElementById('firstName').textContent = firstName || 'there';
-
-        // Readiness
-        document.getElementById('scoreValue').textContent = score;
-        const fill = document.getElementById('readinessFill');
-        const badge = document.getElementById('readinessBadge');
-        const note = document.getElementById('readinessNote');
-
-        setTimeout(() => { fill.style.width = score + '%'; }, 100);
-
-        if (score >= 75) {
-            fill.className = 'readiness-fill high';
-            badge.className = 'readiness-badge high';
-            badge.textContent = 'High Readiness';
-            note.textContent = 'Your business is well-positioned to implement AI quickly. You have clear pain points, the right mindset, and the potential for fast results.';
-        } else if (score >= 50) {
-            fill.className = 'readiness-fill moderate';
-            badge.className = 'readiness-badge moderate';
-            badge.textContent = 'Moderate Readiness';
-            note.textContent = 'There\'s real opportunity here. A focused first project — starting small and proving value — is the right approach for where you are.';
-        } else {
-            fill.className = 'readiness-fill early';
-            badge.className = 'readiness-badge early';
-            badge.textContent = 'Early Stage';
-            note.textContent = 'You\'re earlier in the process — and that\'s fine. That\'s exactly what the free call is for. We\'ll help you understand what makes sense right now vs. later.';
-        }
-
-        // Time savings
-        const timePct = getTimeSavings(challenges);
-        document.getElementById('timeSavings').textContent = 'Up to ' + timePct + '%';
-
-        // Cost savings
-        document.getElementById('costSavings').textContent = getCostSavings(budget, teamSize);
-
-        // Service matches
-        const matches = getServiceMatches(challenges, industry);
-        const container = document.getElementById('serviceMatches');
-        container.innerHTML = matches.map(s => `
-            <div class="service-match">
-                <div class="service-match-icon">${s.icon}</div>
-                <div class="service-match-body">
-                    <div class="service-match-name">${s.name}</div>
-                    <div class="service-match-desc">${s.desc}</div>
-                    <div class="service-match-cta">→ ${s.cta}</div>
-                </div>
-            </div>
-        `).join('');
-
-        // Show results
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        document.getElementById('results').classList.add('show');
-        document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('progressLabel').textContent = 'Evaluation Complete';
-    }
-
-    // ── FORM SUBMIT ──
-    document.getElementById('intakeForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (!validateStep(5)) return;
-
-        document.getElementById('loading').classList.add('show');
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-
-        // Send to Formspree
-        const industry = (document.querySelector('input[name="industry"]:checked') || {}).value || 'Not selected';
-        const challenges = Array.from(document.querySelectorAll('input[name="challenges"]:checked')).map(el => el.value).join(', ') || 'None selected';
-        const score = calculateScore();
-
-        fetch('https://formspree.io/f/mpqknvwq', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({
-                '_subject': 'New Phone Evaluation Lead: ' + document.getElementById('fullName').value + ' — ' + document.getElementById('company').value,
-                '1_Name': document.getElementById('fullName').value,
-                '2_Email': document.getElementById('email').value,
-                '3_Phone': document.getElementById('phone').value,
-                '4_Company': document.getElementById('company').value,
-                '5_Industry': industry,
-                '6_Challenges': challenges,
-                '7_Current_Situation': document.getElementById('currentSituation').value,
-                '8_Specific_Opportunities': document.getElementById('specificChallenges').value,
-                '9_Business_Goals': document.getElementById('goals').value,
-                '10_Timeline': document.getElementById('timeline').value,
-                '11_Budget': document.getElementById('budget').value,
-                '12_Team_Size': document.getElementById('teamSize').value,
-                '13_Additional_Info': document.getElementById('additionalInfo').value || 'None',
-                '14_AI_Readiness_Score': score + ' / 100',
-                '15_Submitted_At': new Date().toLocaleString()
-            })
-        })
-        .then(r => r.json())
-        .then(() => {
-            document.getElementById('loading').classList.remove('show');
-            showResults();
-            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        })
-        .catch(() => {
-            document.getElementById('loading').classList.remove('show');
-            showResults();
-            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
+  function showChips(list){
+    chipsEl.innerHTML='';
+    list.forEach(function(c){
+      var b=document.createElement('button');b.textContent=c;
+      b.onclick=function(){chipsEl.innerHTML='';send(c);};
+      chipsEl.appendChild(b);
     });
+  }
 
-    // Clear errors on input
-    document.querySelectorAll('input, textarea, select').forEach(el => {
-        el.addEventListener('change', function() {
-            const errEl = document.getElementById('err-' + this.id) || document.getElementById('err-' + this.name);
-            if (errEl) errEl.classList.remove('show');
-        });
+  function showResults(d){
+    var card=document.createElement('div');card.className='card';
+    var score=Math.max(0,Math.min(100,Math.round(d.readiness_score||0)));
+    var svcs=(d.recommended_services||[]).slice(0,3);
+    var inner='<div class="label">Your AI readiness</div>'+
+      '<div class="score">'+score+' <small>out of 100</small></div>';
+    if(svcs.length){inner+='<div class="label" style="margin-top:12px">Where we\'d start</div><div class="pills">'+
+      svcs.map(function(s){return '<span>'+esc(s)+'</span>';}).join('')+'</div>';}
+    if(d.qualified){
+      inner+='<a class="book" href="'+CALENDLY+'">Book your free 10-minute call</a>'+
+        '<div class="fine">Free call. No commitment. No tech knowledge needed.</div>';
+    }else{
+      inner+='<div class="fine">No pressure. If the timing changes, we\'re right here.</div>';
+    }
+    card.innerHTML=inner;msgs.appendChild(card);scrollDown();
+    setInput(false);inp.placeholder='Assessment complete';
+  }
+
+  function showError(){
+    var row=document.createElement('div');row.className='errrow';
+    var b=document.createElement('button');b.textContent='Connection hiccup. Tap to retry';
+    b.onclick=function(){row.remove();callApi();};
+    row.appendChild(b);msgs.appendChild(row);scrollDown();
+  }
+
+  function callApi(){
+    setInput(false);
+    var t=showTyping();
+    fetch(API_BASE,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history})
+    }).then(function(r){
+      if(!r.ok)throw new Error('bad status');
+      return r.json();
+    }).then(function(data){
+      t.remove();
+      var reply=data.reply||'';
+      history.push({role:'assistant',content:reply});
+      var p=parseReply(reply);
+      if(p.text)bubble('jamie',renderText(p.text));
+      if(p.complete){showResults(p.complete);return;}
+      if(p.chips&&p.chips.length){showChips(p.chips);setInput(true);}
+      else{setInput(true);}
+      if(history.length>54){
+        bubble('jamie','We\'ve covered a lot. Easiest next step is grabbing a free 10-minute call.');
+        showResults({qualified:true,readiness_score:70,recommended_services:[]});
+      }
+    }).catch(function(){
+      t.remove();setInput(true);showError();
     });
+  }
 
-    updateProgress();
+  function send(text){
+    var v=(text||'').trim();
+    if(!v)return;
+    bubble('user',renderText(v));
+    history.push({role:'user',content:v});
+    inp.value='';
+    callApi();
+  }
+
+  sendBtn.onclick=function(){send(inp.value);};
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')send(inp.value);});
+
+  history.push({role:'user',content:'Hi'});
+  callApi();
+})();
 </script>
 </body>
 </html>
